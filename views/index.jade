@@ -1,0 +1,33 @@
+﻿extends layout
+
+block content
+    a(href="/auth/facebook") FB Login
+    .export
+        a#preview Preview
+        a#export Export
+    .container
+        .row
+            .col-md-6#wrapper
+                link(rel="stylesheet", href="/javascripts/bootstrap-3.3.5/css/bootstrap.css")
+                link(rel='stylesheet', href='/stylesheets/style.css')
+                #canvas
+                    img(src="/images/background.jpg")
+            .col-md-6#exportContainer
+        .row
+            form(role="form")
+                div.form-group
+                    label(for="question") Question
+                    input#question.form-control(type="text", placeholder="Enter Question")
+                label Answers
+                div.form-group
+                    input#answer1.form-control(type="text", placeholder="Answer")
+                div.form-group
+                    input#answer2.form-control(type="text", placeholder="Answer")
+                div.form-group
+                    input#answer3.form-control(type="text", placeholder="Answer")
+                div.form-group
+                    input#answer4.form-control(type="text", placeholder="Answer")               
+
+                    
+
+
