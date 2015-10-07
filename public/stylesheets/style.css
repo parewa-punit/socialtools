@@ -40,3 +40,9 @@ img {
 .watermark {
   color: #393939;
 }
+#bg-selection {
+  margin-top: 10px;
+}
+#bg-selection img {
+  display: inline-block;
+}

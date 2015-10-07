@@ -101,5 +101,9 @@ $(document).ready(function () {
     $("#add-overlay").click(function () {
         var ele = $("<div class='overlay' style='top:" + 20 + "px; right: 20px'><h1>" + "If your inspirational quote contains grammatical errors, its not going to be very inspirational." + "</h1></div>").appendTo("#canvas");
         makeEditable(ele);
-    })
+    });
+
+    $("#bg-selection img").click(function () {
+        $("#canvas img").attr("src", this.src);
+    });
 });

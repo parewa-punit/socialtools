@@ -13,11 +13,17 @@ block content
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 a#add-overlay(class="btn btn-warning") Add
         .row
-            .col-md-6#wrapper
-                link(rel="stylesheet", href="/javascripts/bootstrap-3.3.5/css/bootstrap.css")
-                link(rel='stylesheet', href='/stylesheets/style.css')
-                #canvas
-                    img(src="/images/background.jpg")
+            .col-md-6
+                .row#wrapper
+                    link(rel="stylesheet", href="/javascripts/bootstrap-3.3.5/css/bootstrap.css")
+                    link(rel='stylesheet', href='/stylesheets/style.css')
+                    #canvas
+                        img(src="/images/background.jpg")
+                .row#bg-selection
+                    img(width="125", src="images/background.jpg")
+                    img(width="125", src="images/background1.jpg")
+                    img(width="125", src="images/background2.jpg")
+                    img(width="125", src="images/background3.jpg")
             .col-md-6#exportContainer
 //        .row
             form(role="form")
