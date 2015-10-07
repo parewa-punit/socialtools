@@ -1,8 +1,31 @@
-﻿$(document).ready(function () {
+﻿function updatePreview() {
+    $("#exportContainer").html($("#wrapper").html());
+}
 
-    $(".overlay").wrapInner("<div class='content' contenteditable='true'></div>");
-    $(".overlay").prepend("<div class='ui-widget-header'></div>");
+function wrap(ele) {
+    $(ele).wrapInner("<div class='content' contenteditable='true'></div>");
+    $(ele).prepend("<div class='ui-widget-header edit-marker'></div>");
+    $(ele).prepend("<div class='ui-widget-delete edit-marker'>x</div>");
+}
 
+function makeEditable(ele){
+    wrap(ele);
+
+    $(ele).draggable({
+        handle: ".ui-widget-header", 
+        stop: function () {
+            updatePreview();
+        }
+    }).resizable({
+        stop: function () {
+            updatePreview();
+        }
+    });
+
+    CKEDITOR.inline(ele.find(".content")[0]);
+}
+
+$(document).ready(function () {
     CKEDITOR.on('instanceCreated', function (event) {
         var editor = event.editor;
             
@@ -46,11 +69,7 @@
         })
     });
 
-    $(".overlay").draggable({
-        handle: ".ui-widget-header", 
-        stop: function () {
-            updatePreview();
-        } });
+   
    
 
     //var editor = new MediumEditor('.content', {
@@ -62,23 +81,25 @@
 
 
     $("#export").click(function (){
-        $("#exportContainer").html($("#wrapper").html());
-        var html = $("#wrapper").html();
-        var width = $("#wrapper").width();
-        var height = $("#wrapper").height();
+        updatePreview();
+        var html = $("#exportContainer")[0].outerHTML;
+        var width = $("#exportContainer").width();
+        var height = $("#exportContainer").height();
         var name = "image";
 
-        $.post("/", { html : html, width: width, height: height, name : name }, function (error, response) {
-            console.log(error);
-            console.log(response);
+        $.post("/", { html : html, width: width, height: height, name : name }, function (response) {
+            window.location.href = response;
         });
     })
     
-    function updatePreview() {
-        $("#exportContainer").html($("#wrapper").html());
-    }
+ 
 
     $("#preview").click(function () {
         updatePreview();
     });
+
+    $("#add-overlay").click(function () {
+        var ele = $("<div class='overlay' style='top:" + 20 + "px; right: 20px'><h1>" + "If your inspirational quote contains grammatical errors, its not going to be very inspirational." + "</h1></div>").appendTo("#canvas");
+        makeEditable(ele);
+    })
 });

@@ -1,11 +1,17 @@
 ﻿extends layout
 
 block content
-    a(href="/auth/facebook") FB Login
-    .export
-        a#preview Preview
-        a#export Export
+    
     .container
+        .export
+            .well
+                a(href="/auth/facebook", class="btn btn-danger") FB Login
+                &nbsp;
+                a#preview(class="btn btn-default") Preview
+                &nbsp;
+                a#export(class="btn btn-info") Export
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                a#add-overlay(class="btn btn-warning") Add
         .row
             .col-md-6#wrapper
                 link(rel="stylesheet", href="/javascripts/bootstrap-3.3.5/css/bootstrap.css")
@@ -13,7 +19,7 @@ block content
                 #canvas
                     img(src="/images/background.jpg")
             .col-md-6#exportContainer
-        .row
+//        .row
             form(role="form")
                 div.form-group
                     label(for="question") Question

@@ -19,6 +19,14 @@ img {
 .ui-draggable-handle {
   cursor: move;
 }
+#wrapper .ui-widget-delete {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  background-color: #f00;
+  padding: 2px 5px;
+  color: #fff;
+}
 [contenteditable]:focus {
   outline: 0px solid transparent;
 }
@@ -26,7 +34,7 @@ img {
   height: 5px;
   background: #ffa500;
 }
-#exportContainer .ui-widget-header {
+#exportContainer .edit-marker {
   display: none;
 }
 .watermark {

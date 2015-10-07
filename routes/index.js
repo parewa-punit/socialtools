@@ -67,26 +67,31 @@ router.post('/', function (req, res) {
     var height = req.body.height;
     var width = req.body.width;
     var name = req.body.name;
+    
+    var filename = "public/html/" + name + ".html";
+    var imagelocation = "html/" + name + ".jpg";
 
-    fs.writeFileSync("public/html/" + name + ".html", html.toString());
+    fs.writeFileSync(filename, html.toString());
     var wkhtmltoimage = spawn("wkhtmltoimage", [
         "--width", width, 
         "--height", height, 
-        "localhost:1337/html/" + name + ".html", "public/html/" + name + ".jpg"])
-    
+        "localhost:3000/html/" + name + ".html", "public/" + imagelocation]);
+   
     wkhtmltoimage.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+        console.log("stdout console output");
+     //   res.send("stdout");
     });
     
     wkhtmltoimage.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+        console.log(data);
     });
     
     wkhtmltoimage.on('exit', function (code) {
-        console.log('child process exited with code ' + code);
+        console.log("exit console output");
+        res.send(imagelocation);
     });
 
-    res.send(html);
+    
 });
 
 
