@@ -355,12 +355,17 @@
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
     <Content Include="package.json" />
+    <Content Include="public\html\background.jpg" />
     <Content Include="public\html\ckeditor-full.html" />
     <Content Include="public\html\ckeditor.html" />
     <Content Include="public\html\HTML1.html" />
     <Content Include="public\html\image.html" />
     <Content Include="public\html\image.jpg" />
     <Content Include="public\images\background.jpg" />
+    <Content Include="public\images\background1.jpg" />
+    <Content Include="public\images\background2.jpg" />
+    <Content Include="public\images\background3.jpg" />
+    <Content Include="public\images\background4.jpg" />
     <Content Include="public\javascripts\bootstrap-3.3.5\css\bootstrap-theme.css" />
     <Content Include="public\javascripts\bootstrap-3.3.5\css\bootstrap-theme.css.map" />
     <Content Include="public\javascripts\bootstrap-3.3.5\css\bootstrap-theme.min.css" />

@@ -1,5 +1,7 @@
 ﻿function updatePreview() {
-    $("#exportContainer").html($("#wrapper").html());
+    var html = $("#wrapper").html();
+    $("#exportContainer").html(html);
+    localStorage.setItem("html", $("#exportContainer").html());
 }
 
 function wrap(ele) {
@@ -9,20 +11,20 @@ function wrap(ele) {
 }
 
 function makeEditable(ele){
-    wrap(ele);
-
+    $(ele).resizable({
+        stop: function () {
+            updatePreview();
+        }
+    });
+    
     $(ele).draggable({
         handle: ".ui-widget-header", 
         stop: function () {
             updatePreview();
         }
-    }).resizable({
-        stop: function () {
-            updatePreview();
-        }
     });
 
-    CKEDITOR.inline(ele.find(".content")[0]);
+    CKEDITOR.inline($(ele).find(".content")[0]);
 }
 
 $(document).ready(function () {
@@ -100,10 +102,22 @@ $(document).ready(function () {
 
     $("#add-overlay").click(function () {
         var ele = $("<div class='overlay' style='top:" + 20 + "px; right: 20px'><h1>" + "If your inspirational quote contains grammatical errors, its not going to be very inspirational." + "</h1></div>").appendTo("#canvas");
+        wrap(ele);
         makeEditable(ele);
     });
 
     $("#bg-selection img").click(function () {
         $("#canvas img").attr("src", this.src);
     });
+    
+    
+    var html = localStorage.getItem("html");
+    if (html !== null) {
+        $("#wrapper").html(html);
+        
+        $("#wrapper .overlay").each(function (index, overlay) {
+            makeEditable(overlay);
+        });
+        
+    }
 });
