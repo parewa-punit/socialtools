@@ -354,6 +354,7 @@
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
+    <Content Include=".gitignore" />
     <Content Include="package.json" />
     <Content Include="public\html\background.jpg" />
     <Content Include="public\html\ckeditor-full.html" />
@@ -623,6 +624,8 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="public\" />
+    <Folder Include="public\export\html\" />
+    <Folder Include="public\export\image\" />
     <Folder Include="public\images\" />
     <Folder Include="public\javascripts\" />
     <Folder Include="public\javascripts\bootstrap-3.3.5\" />
@@ -779,6 +782,7 @@
     <Folder Include="public\javascripts\tinymce\js\tinymce\skins\lightgray\img\" />
     <Folder Include="public\javascripts\tinymce\js\tinymce\themes\" />
     <Folder Include="public\javascripts\tinymce\js\tinymce\themes\modern\" />
+    <Folder Include="public\export\" />
     <Folder Include="public\stylesheets\" />
     <Folder Include="routes\" />
     <Folder Include="views\" />

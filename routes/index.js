@@ -68,14 +68,14 @@ router.post('/', function (req, res) {
     var width = req.body.width;
     var name = req.body.name;
     
-    var filename = "public/html/" + name + ".html";
-    var imagelocation = "html/" + name + ".jpg";
+    var filename = "public/export/html/" + name + ".html";
+    var imagelocation = "export/image/" + name + ".jpg";
 
     fs.writeFileSync(filename, html.toString());
     var wkhtmltoimage = spawn("wkhtmltoimage", [
         "--width", width, 
         "--height", height, 
-        "localhost:3000/html/" + name + ".html", "public/" + imagelocation]);
+        "localhost:3000/export/html/" + name + ".html", "public/" + imagelocation]);
    
     wkhtmltoimage.stdout.on('data', function (data) {
         console.log("stdout console output");
