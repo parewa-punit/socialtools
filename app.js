@@ -1,4 +1,4 @@
-﻿var express = require('express');
+var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -58,6 +58,6 @@ app.use(function (err, req, res, next) {
     });
 });
 
-app.set("port", 3000);
-//app.listen(config.port);
+app.listen(5000);
+
 module.exports = app;

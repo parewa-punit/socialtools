@@ -16,9 +16,9 @@ function makeEditable(ele){
             updatePreview();
         }
     });
-    
+
     $(ele).draggable({
-        handle: ".ui-widget-header", 
+        handle: ".ui-widget-header",
         stop: function () {
             updatePreview();
         }
@@ -30,16 +30,16 @@ function makeEditable(ele){
 $(document).ready(function () {
     CKEDITOR.on('instanceCreated', function (event) {
         var editor = event.editor;
-            
+
         editor.on('configLoaded', function () {
-                
+
             // Remove redundant plugins to make the editor simpler.
      //       editor.config.removePlugins = 'find,flash,' +
 					//'forms,iframe,image,newpage,removeformat,' +
 					//'smiley,specialchar,stylescombo,templates';
-            
+
             editor.config.extraPlugins = 'colorbutton,colordialog';
-                
+
             // Rearrange the toolbar layout.
             editor.config.toolbarGroups = [
             //    { name: 'document', groups: ['mode', 'document', 'doctools'] },
@@ -59,7 +59,7 @@ $(document).ready(function () {
                 { name: 'others' },
               //  { name: 'about' }
             ];
-          
+
         });
 
         editor.on('saveSnapshot', function () {
@@ -71,8 +71,8 @@ $(document).ready(function () {
         })
     });
 
-   
-   
+
+
 
     //var editor = new MediumEditor('.content', {
     //    buttonLabels: 'fontawesome',
@@ -93,8 +93,8 @@ $(document).ready(function () {
             window.location.href = response;
         });
     })
-    
- 
+
+
 
     $("#preview").click(function () {
         updatePreview();
@@ -109,15 +109,29 @@ $(document).ready(function () {
     $("#bg-selection img").click(function () {
         $("#canvas img").attr("src", this.src);
     });
-    
-    
+
+
     var html = localStorage.getItem("html");
     if (html !== null) {
         $("#wrapper").html(html);
-        
+
         $("#wrapper .overlay").each(function (index, overlay) {
             makeEditable(overlay);
         });
-        
+
     }
+
+   $(".watermark-tool input[name=url]").change(function(e) {
+        var url = $(".watermark-tool input[name=url]").val()
+        $.get(url)
+        .done(function() {
+            $("#with-watermark").attr("src", url);
+        }).fail(function() {
+            $("#with-watermark").attr("src", "/images/invalid.png");
+        })
+    });
+
 });
+
+
+

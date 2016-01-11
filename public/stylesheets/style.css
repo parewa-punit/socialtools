@@ -46,3 +46,12 @@ img {
 #bg-selection img {
   display: inline-block;
 }
+input[name=url] {
+  width: 500px;
+}
+.watermark-tool input {
+  height: 40px;
+}
+.watermark-tool img {
+  display: block;
+}
