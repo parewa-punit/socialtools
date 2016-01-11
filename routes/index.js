@@ -5,8 +5,7 @@ var formidable = require('formidable');
 var spawn = require('child_process').spawn;
 var graph = require('fbgraph');
 var util = require("util");
-
-
+var config = require("../config.js");
 
 // this should really be in a config file!
 var conf = {
@@ -45,7 +44,7 @@ router.get("/download/:url/:width/:height", function(req, res, next){
     var wkhtmltoimage = spawn("wkhtmltoimage", [
          "--width", width,
          "--height", height,
-        "localhost:3000/watermark/" + file_name, save_location]);
+        "localhost:" + config.port + "/watermark/" + file_name, save_location]);
 
     wkhtmltoimage.stdout.on('data', function (data) {
         console.log("stdout console output");
