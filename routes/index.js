@@ -40,11 +40,14 @@ router.get("/download/:url/:width/:height", function(req, res, next){
     var watermark_file_name = "watermark-" + file_name;
     var save_location = "public/images/" + watermark_file_name;
 
+    var download_url = "localhost:" + config.port + "/watermark/" + file_name;
+
+    console.log("Download url is ", download_url);
+    console.log("Width is ", width);
 
     var wkhtmltoimage = spawn("wkhtmltoimage", [
          "--width", width,
-         "--height", height,
-        "localhost:" + config.port + "/watermark/" + file_name, save_location]);
+        download_url, save_location]);
 
     wkhtmltoimage.stdout.on('data', function (data) {
         console.log("stdout console output");

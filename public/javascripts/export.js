@@ -1,6 +1,6 @@
 $(window).load(function() {
   var width = $(".output").width();
-  var height = $(".output").height() + 120;
+  var height = $(".output").height();
 
   var url = $(".output #original").val();
 
