@@ -105,6 +105,7 @@ router.post("/upload", function(req, res, next){
         var file_name = this.openedFiles[0].name;
         /* Location where we want to copy the uploaded file */
         var new_location = 'public' + path.sep + 'images' + path.sep;
+        var resources_location = 'public' + path.sep + 'resources' + path.sep;
 
         var upload_location = new_location + file_name;
         var save_location = new_location + "watermark-" + file_name;
@@ -119,7 +120,7 @@ router.post("/upload", function(req, res, next){
                             console.log(directory);
                             upload_location = directory + path.sep + upload_location;
                             save_location = directory + path.sep + save_location;
-                            logo_location = directory + path.sep + new_location + path.sep + "logo.png";
+                            logo_location = directory + path.sep + resources_location + path.sep + "logo.png";
 
                             gm(logo_location)
                             .size(function(err, size){
