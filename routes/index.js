@@ -6,6 +6,9 @@ var spawn = require('child_process').spawn;
 var graph = require('fbgraph');
 var util = require("util");
 var config = require("../config.js");
+var gm = require('gm').subClass({imageMagick: true});
+var path = require('path');
+
 
 // this should really be in a config file!
 var conf = {
@@ -101,17 +104,50 @@ router.post("/upload", function(req, res, next){
         /* The file name of the uploaded file */
         var file_name = this.openedFiles[0].name;
         /* Location where we want to copy the uploaded file */
-        var new_location = 'public/images/';
+        var new_location = 'public' + path.sep + 'images' + path.sep;
+
+        var upload_location = new_location + file_name;
+        var save_location = new_location + "watermark-" + file_name;
 
         fs.readFile(temp_path, function(err, data) {
-            fs.writeFile(new_location + file_name, data, function(err) {
+            fs.writeFile(upload_location, data, function(err) {
                 fs.unlink(temp_path, function(err) {
                     if (err) {
                         console.error(err);
                         } else {
+                            var directory = path.dirname(__dirname);
+                            console.log(directory);
+                            upload_location = directory + path.sep + upload_location;
+                            save_location = directory + path.sep + save_location;
+                            logo_location = directory + path.sep + new_location + path.sep + "logo.png";
+
+                            gm(logo_location)
+                            .size(function(err, size){
+                                var logo_original_width = size.width;
+                                var logo_original_height = size.height;
+                                gm(upload_location)
+                                .size(function (err, size) {
+                                    if (!err) {
+                                        var logo_width = Math.floor(size.width/6);
+                                        var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
+                                        var logo_x = size.width - logo_width - 10;
+                                        var logo_y = 10;
+                                        gm(upload_location)
+                                        .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                                        .write(save_location, function (err) {
+                                            res.download('public/images/' + "watermark-" + file_name);
+                                        });;
+                                        ;
+                                    }
+                            });
+                            });
+
+                           // obtain the size of an image
 
 
-                        res.redirect("/getdimensions/" + file_name);
+
+
+                      //  res.redirect("/getdimensions/" + file_name);
                     }
                 });
             });
