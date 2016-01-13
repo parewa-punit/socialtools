@@ -129,7 +129,7 @@ router.post("/upload", function(req, res, next){
                  var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
                  var logo_x = size.width - logo_width - 10;
                  var logo_y = 10;
-                 this.draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                // this.draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
                  .stream(function (err, stdout, stderr) {
                     var writeStream = fs.createWriteStream(save_location);
                     stdout.pipe(res);
