@@ -143,11 +143,10 @@ router.post("/upload", function(req, res, next){
                                     var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
                                     var logo_x = size.width - logo_width - 10;
                                     var logo_y = 10;
-                                    gm(upload_location)
-                                    .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                                    this.draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
                                     .rotate("white", 270)
                                     .write(save_location, function(err){
-                                        res.download('public/images/' + "watermark-" + file_name);
+                                        res.sendfile('public/images/' + "watermark-" + file_name);
                                     });
                                 });
                             });
@@ -161,7 +160,7 @@ router.post("/upload", function(req, res, next){
                                     gm(upload_location)
                                     .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
                                     .write(save_location, function(err){
-                                        res.download('public/images/' + "watermark-" + file_name);
+                                        res.sendfile('public/images/' + "watermark-" + file_name);
                                     });
                             });
                         }
