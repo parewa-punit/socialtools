@@ -8,6 +8,7 @@ var util = require("util");
 var config = require("../config.js");
 var gm = require('gm').subClass({imageMagick: true});
 var path = require('path');
+var wkhtmltoimage = require('wkhtmltoimage');
 
 
 // this should really be in a config file!
@@ -32,8 +33,10 @@ router.get("/upload/:url", function(req, res, next){
     res.render("tcp", {
         url: "/images/" + req.params.url,
         original: req.params.url
-     });
+    });
 });
+
+
 
 router.get("/download/:url/:width/:height", function(req, res, next){
     var file_name = req.params.url;
@@ -49,13 +52,13 @@ router.get("/download/:url/:width/:height", function(req, res, next){
     console.log("Width is ", width);
 
     var wkhtmltoimage = spawn("wkhtmltoimage", [
-         "--width", width,
-        download_url, save_location]);
+       "--width", width,
+       download_url, save_location]);
 
     wkhtmltoimage.stdout.on('data', function (data) {
         console.log("stdout console output");
      //   res.send("stdout");
-    });
+ });
 
     wkhtmltoimage.stderr.on('data', function (data) {
         console.log(data);
@@ -84,12 +87,9 @@ router.get("/watermark/:original", function(req, res, next){
 
 router.post("/upload", function(req, res, next){
     var form = new formidable.IncomingForm();
+    var rotate;
     form.parse(req, function(err, fields, files) {
-        // `file` is the name of the <input> field of type `file`
-        // console.log(files);
-        // res.writeHead(200, {'content-type': 'text/plain'});
-        // res.write('received upload:\n\n');
-        // res.end(util.inspect({fields: fields, files: files}));
+        rotate = fields.rotate == "on";
     });
     form.on('error', function(err) {
         console.error(err);
@@ -98,50 +98,99 @@ router.post("/upload", function(req, res, next){
         var percent_complete = (bytesReceived / bytesExpected) * 100;
         console.log(percent_complete.toFixed(2));
     });
-    form.on('end', function(fields, files) {
-        /* Temporary location of our uploaded file */
-        var temp_path = this.openedFiles[0].path;
-        /* The file name of the uploaded file */
-        var file_name = this.openedFiles[0].name;
-        /* Location where we want to copy the uploaded file */
-        var new_location = 'public' + path.sep + 'images' + path.sep;
-        var resources_location = 'public' + path.sep + 'resources' + path.sep;
+    form.on('end', function(err, fields, files) {
 
-        var upload_location = new_location + file_name;
-        var save_location = new_location + "watermark-" + file_name;
+      //  console.log("Fields", fields);
+      //  console.log("Files", files);
+      /* Temporary location of our uploaded file */
+      var temp_path = this.openedFiles[0].path;
+      /* The file name of the uploaded file */
+      var file_name = this.openedFiles[0].name;
 
-        fs.readFile(temp_path, function(err, data) {
-            fs.writeFile(upload_location, data, function(err) {
-                fs.unlink(temp_path, function(err) {
-                    if (err) {
-                        console.error(err);
-                        } else {
-                            var directory = path.dirname(__dirname);
-                            console.log(directory);
-                            upload_location = directory + path.sep + upload_location;
-                            save_location = directory + path.sep + save_location;
-                            logo_location = directory + path.sep + resources_location + path.sep + "logo.png";
+      /* Location where we want to copy the uploaded file */
+      var new_location = 'public' + path.sep + 'images' + path.sep;
+      var resources_location = 'public' + path.sep + 'resources' + path.sep;
 
-                            gm(logo_location)
-                            .size(function(err, size){
-                                var logo_original_width = size.width;
-                                var logo_original_height = size.height;
+      var upload_location = new_location + file_name;
+      var save_location = new_location + "watermark-" + file_name;
+
+      fs.readFile(temp_path, function(err, data) {
+        fs.writeFile(upload_location, data, function(err) {
+            fs.unlink(temp_path, function(err) {
+                if (err) {
+                    console.error(err);
+                } else {
+
+                    console.log("Rotate", rotate);
+                    var directory = path.dirname(__dirname);
+
+                    upload_location = directory + path.sep + upload_location;
+                    save_location = directory + path.sep + save_location;
+                    logo_location = directory + path.sep + resources_location + path.sep + "logo.png";
+
+                    gm(logo_location)
+                    .size(function(err, size){
+                        var logo_original_width = size.width;
+                        var logo_original_height = size.height;
+
+                        if(rotate) {
+                            gm(upload_location)
+                            .rotate("white", 90)
+                            .write(upload_location, function(err){
                                 gm(upload_location)
-                                .size(function (err, size) {
-                                    if (!err) {
-                                        var logo_width = Math.floor(size.width/6);
-                                        var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
-                                        var logo_x = size.width - logo_width - 10;
-                                        var logo_y = 10;
-                                        gm(upload_location)
-                                        .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
-                                        .write(save_location, function (err) {
-                                            res.download('public/images/' + "watermark-" + file_name);
-                                        });;
-                                        ;
-                                    }
+                                .size(function(err, size){
+                                    var logo_width = Math.floor(size.width/6);
+                                    var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
+                                    var logo_x = size.width - logo_width - 10;
+                                    var logo_y = 10;
+                                    gm(upload_location)
+                                    .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                                    .rotate("white", 270)
+                                    .write(save_location, function(err){
+                                        res.download('public/images/' + "watermark-" + file_name);
+                                    });
+                                });
                             });
+                        } else {
+                            gm(upload_location)
+                            .size(function(err, size){
+                                    var logo_width = Math.floor(size.width/6);
+                                    var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
+                                    var logo_x = size.width - logo_width - 10;
+                                    var logo_y = 10;
+                                    gm(upload_location)
+                                    .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                                    .write(save_location, function(err){
+                                        res.download('public/images/' + "watermark-" + file_name);
+                                    });
                             });
+                        }
+                    });
+
+                    //     gm(upload_location)
+                    //     .rotate("white", 90)
+                    //     .write(upload_location, function(err) {
+                    //         gm(upload_location)
+                    //         .size(function (err, size) {
+                    //             if (!err) {
+                    //                 var logo_width = Math.floor(size.width/6);
+                    //                 var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
+                    //                 var logo_x = size.width - logo_width - 10;
+                    //                 var logo_y = 10;
+                    //                 gm(upload_location)
+                    //                 .draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                    //                 .write(save_location, function (err) {
+                    //                     gm(save_location)
+                    //                     .rotate("white", 270)
+                    //                     .write(save_location, function(err){
+                    //                         res.download('public/images/' + "watermark-" + file_name);
+                    //                     })
+                    //                 });
+                    //             }
+                    //         });
+                    //     });
+                    // });
+                       //     res.redirect("getdimensions/" + file_name);
 
                            // obtain the size of an image
 
@@ -149,11 +198,11 @@ router.post("/upload", function(req, res, next){
 
 
                       //  res.redirect("/getdimensions/" + file_name);
-                    }
-                });
-            });
-        });
-    });
+                  }
+              });
+});
+});
+});
 
 
 });
@@ -173,10 +222,10 @@ router.get('/auth/facebook', function (req, res) {
         if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
             res.redirect(authUrl);
         } else {  //req.query.error == 'access_denied'
-            res.send('access denied');
-        }
-        return;
+        res.send('access denied');
     }
+    return;
+}
     // code is set
     // we'll send that and get the access token
     graph.authorize({
@@ -219,7 +268,7 @@ router.post('/', function (req, res) {
     wkhtmltoimage.stdout.on('data', function (data) {
         console.log("stdout console output");
      //   res.send("stdout");
-    });
+ });
 
     wkhtmltoimage.stderr.on('data', function (data) {
         console.log(data);
