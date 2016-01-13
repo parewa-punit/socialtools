@@ -107,6 +107,7 @@ router.post("/upload", function(req, res, next){
       /* The file name of the uploaded file */
       var file_name = this.openedFiles[0].name;
 
+      var directory = path.dirname(__dirname);
       /* Location where we want to copy the uploaded file */
       var new_location = 'public' + path.sep + 'images' + path.sep;
       var resources_location = 'public' + path.sep + 'resources' + path.sep;
@@ -114,14 +115,29 @@ router.post("/upload", function(req, res, next){
       var upload_location = new_location + file_name;
       var save_location = new_location + "watermark-" + file_name;
 
+      var logo_location = directory + path.sep + resources_location + path.sep + "logo.png";
+
       var readStream = fs.createReadStream(temp_path);
-      gm(readStream)
-      .resize('200', '200')
-      .stream(function (err, stdout, stderr) {
-        var writeStream = fs.createWriteStream(save_location);
-        stdout.pipe(res);
+
+      gm(logo_location)
+      .size(function(err, size){
+            var logo_original_width = size.width;
+            var logo_original_height = size.height;
+            gm(readStream)
+            .size({bufferStream: true}, function(err, size) {
+                 var logo_width = Math.floor(size.width/6);
+                 var logo_height = Math.floor(logo_width * logo_original_height/logo_original_width);
+                 var logo_x = size.width - logo_width - 10;
+                 var logo_y = 10;
+                 this.draw(['image Over ' + logo_x + ',' + logo_y + ' ' + logo_width + ',' + logo_height + ' \"' + logo_location + '\"'])
+                 .stream(function (err, stdout, stderr) {
+                    var writeStream = fs.createWriteStream(save_location);
+                    stdout.pipe(res);
+                });
+            });
       });
-    });
+  });
+});
 
       // fs.readFile(temp_path, function(err, data) {
       //   fs.writeFile(upload_location, data, function(err) {
@@ -131,7 +147,7 @@ router.post("/upload", function(req, res, next){
       //           } else {
 
       //               console.log("Rotate", rotate);
-      //               var directory = path.dirname(__dirname);
+      //
 
       //               upload_location = directory + path.sep + upload_location;
       //               save_location = directory + path.sep + save_location;
@@ -190,7 +206,7 @@ router.post("/upload", function(req, res, next){
 // });
 
 
-});
+//});
 
 
 router.get('/auth/facebook', function (req, res) {
